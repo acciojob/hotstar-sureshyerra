@@ -22,7 +22,7 @@ public class UserService {
     WebSeriesRepository webSeriesRepository;
 
 
-    public Integer addUser(User user){
+    public Integer addUser(User user) {
 
         //Jut simply add the user to the Db and return the userId returned by the repository
         User user1 = userRepository.save(user);
@@ -30,24 +30,41 @@ public class UserService {
 
     }
 
-    public Integer getAvailableCountOfWebSeriesViewable(Integer userId){
+    public Integer getAvailableCountOfWebSeriesViewable(Integer userId) {
 
         //Return the count of all webSeries that a user can watch based on his ageLimit and subscriptionType
         //Hint: Take out all the Webseries from the WebRepository
 
         User user = userRepository.findById(userId).get();
-
-        int count = 0;
-        for (WebSeries webSeries : webSeriesRepository.findAll()){
-            if(user.getAge() >= webSeries.getAgeLimit() && user.getSubscription().getSubscriptionType().equals(webSeries.getSubscriptionType())){
-                count++;
-            }
+        if (user.getSubscription().getSubscriptionType().equals(SubscriptionType.ELITE)) {
+            return webSeriesRepository.findAll().size();
         }
-        return  count;
+
+            int count = 0;
+            for (WebSeries webSeries : webSeriesRepository.findAll()) {
+                if (user.getAge() >= webSeries.getAgeLimit()) {
+                    if (user.getSubscription().getSubscriptionType().equals(SubscriptionType.PRO)) {
+                        if (!webSeries.getSubscriptionType().equals(SubscriptionType.ELITE)) {
+                            count++;
+                        }
+                    } else if (user.getSubscription().getSubscriptionType().equals(SubscriptionType.BASIC)) {
+
+                        if (webSeries.getSubscriptionType().equals(SubscriptionType.BASIC)) {
+                            count++;
+                        }
+                    }
+                }
+            }
 
 
-
+        return count;
     }
-
-
 }
+
+
+
+
+
+
+
+

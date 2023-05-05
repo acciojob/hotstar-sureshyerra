@@ -65,8 +65,8 @@ public class Subscription {
         return startSubscriptionDate;
     }
 
-    public void setStartSubscriptionDate(Date durationOfSubscription) {
-        this.startSubscriptionDate = durationOfSubscription;
+    public void setStartSubscriptionDate(Date startSubscriptionDate) {
+        this.startSubscriptionDate = startSubscriptionDate;
     }
 
     public int getTotalAmountPaid() {

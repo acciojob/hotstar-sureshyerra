@@ -58,11 +58,12 @@ public class SubscriptionService {
         User user = userRepository.findById(userId).get();
         if(user.getSubscription().getSubscriptionType().equals("ELITE")){
             throw new Exception("Already the best Subscription");
-        } else if (user.getSubscription().getSubscriptionType().equals("BASIC")) {
+        }
+        if (user.getSubscription().getSubscriptionType().equals("BASIC")) {
             user.getSubscription().setSubscriptionType(SubscriptionType.PRO);
             amount = 300;
-        }
-        else {
+        } else if (user.getSubscription().getSubscriptionType().equals("PRO")) {
+
             user.getSubscription().setSubscriptionType(SubscriptionType.ELITE);
             amount = 200;
         }

@@ -22,25 +22,29 @@ public class WebSeriesService {
                 if(webSeriesRepository.findBySeriesName(webSeriesEntryDto.getSeriesName())!= null){
                     throw new Exception("Series is already present");
                 }
+        ProductionHouse productionHouse;
+           productionHouse = productionHouseRepository.findById(webSeriesEntryDto.getProductionHouseId()).get();
+           WebSeries webSeries = new WebSeries();
+          if (productionHouse != null) {
+              webSeries = new WebSeries();
+              webSeries.setSeriesName(webSeriesEntryDto.getSeriesName());
+              webSeries.setAgeLimit(webSeriesEntryDto.getAgeLimit());
+              webSeries.setRating(webSeriesEntryDto.getRating());
+              webSeries.setSubscriptionType(webSeriesEntryDto.getSubscriptionType());
 
-             WebSeries webSeries = new WebSeries();
-             webSeries.setSeriesName(webSeriesEntryDto.getSeriesName());
-             webSeries.setAgeLimit(webSeriesEntryDto.getAgeLimit());
-             webSeries.setRating(webSeriesEntryDto.getRating());
-             webSeries.setSubscriptionType(webSeriesEntryDto.getSubscriptionType());
 
-             ProductionHouse productionHouse = productionHouseRepository.findById(webSeriesEntryDto.getProductionHouseId()).get();
-             webSeries.setProductionHouse(productionHouse);
-             productionHouse.getWebSeriesList().add(webSeries);
+              webSeries.setProductionHouse(productionHouse);
+              productionHouse.getWebSeriesList().add(webSeries);
 
-             int size = productionHouse.getWebSeriesList().size();
-             double sum = 0;
-             for (WebSeries webSeries1 : productionHouse.getWebSeriesList()){
-                 sum += webSeries1.getRating();
-             }
-             double avg = (double) sum/size;
-             productionHouse.setRatings(avg);
-             productionHouseRepository.save(productionHouse);
+              double size = productionHouse.getWebSeriesList().size();
+              double sum = 0;
+              for (WebSeries webSeries1 : productionHouse.getWebSeriesList()) {
+                  sum += webSeries1.getRating();
+              }
+              double avg = sum / size;
+              productionHouse.setRatings(avg);
+              productionHouseRepository.save(productionHouse);
+          }
 
              return webSeries.getId();
 

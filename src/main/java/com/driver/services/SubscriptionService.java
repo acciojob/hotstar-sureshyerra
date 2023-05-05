@@ -30,13 +30,12 @@ public class SubscriptionService {
         subscription.setSubscriptionType(subscriptionEntryDto.getSubscriptionType());
         subscription.setNoOfScreensSubscribed(subscriptionEntryDto.getNoOfScreensRequired());
 
-        if(subscriptionEntryDto.getNoOfScreensRequired() <= 200) {
-            subscription.setTotalAmountPaid(500);
-        } else if (subscriptionEntryDto.getNoOfScreensRequired()<=250) {
-            subscription.setTotalAmountPaid(800);
-        }
-        else {
-            subscription.setTotalAmountPaid(1000);
+        if(subscriptionEntryDto.equals("ELITE")){
+            subscription.setTotalAmountPaid(1000 + 350 * subscriptionEntryDto.getNoOfScreensRequired());
+        } else if (subscriptionEntryDto.getSubscriptionType().equals("PRO")) {
+            subscription.setTotalAmountPaid(800 + 250 * subscriptionEntryDto.getNoOfScreensRequired());
+        } else if (subscriptionEntryDto.getSubscriptionType().equals("BASIC")) {
+            subscription.setTotalAmountPaid(500 + 200 * subscriptionEntryDto.getNoOfScreensRequired());
         }
         user.setSubscription(subscription);
         subscription.setUser(user);
@@ -60,12 +59,19 @@ public class SubscriptionService {
             throw new Exception("Already the best Subscription");
         }
         if (user.getSubscription().getSubscriptionType().equals("BASIC")) {
-            user.getSubscription().setSubscriptionType(SubscriptionType.PRO);
-            amount = 300;
-        } else if (user.getSubscription().getSubscriptionType().equals("PRO")) {
 
+            int oldprice = user.getSubscription().getTotalAmountPaid();
+            int newprice = 800 + 250  * user.getSubscription().getNoOfScreensSubscribed();
+            user.getSubscription().setTotalAmountPaid(newprice);
+
+            user.getSubscription().setSubscriptionType(SubscriptionType.PRO);
+            amount = newprice-oldprice;
+        } else if (user.getSubscription().getSubscriptionType().equals("PRO")) {
+            int oldprice = user.getSubscription().getTotalAmountPaid();
+            int newprice = 1000 + 350 * user.getSubscription().getNoOfScreensSubscribed();
+            user.getSubscription().setTotalAmountPaid(newprice);
             user.getSubscription().setSubscriptionType(SubscriptionType.ELITE);
-            amount = 200;
+            amount = newprice-oldprice;
         }
         userRepository.save(user);
         return amount;

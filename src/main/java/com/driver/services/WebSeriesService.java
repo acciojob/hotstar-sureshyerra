@@ -41,9 +41,11 @@ public class WebSeriesService {
               for (WebSeries webSeries1 : productionHouse.getWebSeriesList()) {
                   sum += webSeries1.getRating();
               }
-              double avg = sum / size;
-              productionHouse.setRatings(avg);
-              productionHouseRepository.save(productionHouse);
+              if(size > 1) {
+                  double avg = sum / size;
+                  productionHouse.setRatings(avg);
+                  productionHouseRepository.save(productionHouse);
+              }
           }
 
              return webSeries.getId();
